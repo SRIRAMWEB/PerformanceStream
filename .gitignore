@@ -1,0 +1,17 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+.vercel
+cloudflared.exe
+.next/
+temp_video_frames/
+temp_test_frames/
+tsconfig.tsbuildinfo
+*.mp4
+!public/videos/performancestream_walkthrough.mp4
