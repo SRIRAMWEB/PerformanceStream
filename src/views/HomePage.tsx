@@ -2,45 +2,54 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useSim } from '../context/SimContext';
-import { PrimaryButton, SecondaryButton } from '../components/Buttons';
-import { EcgLine, TrackLanes, ImageCard } from '../components/VisualElements';
+import {
+  HeartbeatLine,
+  SensorIllustration,
+  ShieldIllustration,
+  LedgerIllustration,
+  DashboardIllustration,
+} from '../components/VisualElements';
 import { BottomBar } from '../components/BottomBar';
 
 export function HomePage() {
-  const { counters, readings } = useSim();
-  const [activeStep, setActiveStep] = useState(0);
   const [impactTab, setImpactTab] = useState<'impact' | 'future'>('impact');
 
-  const steps = [
+  // The 5 Sequential Checks per reading (visible row of cards, no carousel)
+  const fiveChecks = [
     {
       num: '01',
-      title: 'Verify the source',
+      title: 'Who sent it?',
       tagline: 'Cryptographic identity at the edge',
-      body: 'Every device has its own identity and secret key, and cryptographically signs each message with HMAC-SHA256.',
-      stops: 'Fake sensors, tampered data, unauthorized devices.',
+      body: 'Every device has its own identity and secret key burned into hardware, verifying device registration at the gateway.',
+      stops: 'Fake sensors and unauthorized devices.',
     },
     {
       num: '02',
-      title: 'Validate the reading',
-      tagline: 'Strict freshness and sequence rules',
-      body: 'Checks timestamp freshness within ±5s, one-time nonce uniqueness, strictly monotonic sequence counters, and believable boundaries.',
-      stops: 'Replay attacks, timestamp manipulation, impossible sensor values.',
+      title: 'Was it altered?',
+      tagline: 'HMAC-SHA256 payload integrity',
+      body: 'Cryptographically verifies message payload against the shared secret key to ensure not a single bit was changed in transit.',
+      stops: 'Altered readings and payload tampering.',
     },
     {
       num: '03',
-      title: 'Separate the zones',
-      tagline: 'Isolated trust boundaries',
-      body: 'Raw, processed, and reporting data reside in isolated zones under least-privilege access controls. Raw zones are append-only WORM stores.',
-      stops: 'A compromised peripheral or analytics node spreading lateral damage.',
+      title: 'Is it fresh?',
+      tagline: 'Strict freshness and nonce uniqueness',
+      body: 'Validates timestamp freshness within a strict ±5s window and confirms the one-time nonce was never previously recorded.',
+      stops: 'Replay attacks and stale session injection.',
     },
     {
       num: '04',
-      title: 'Detect and trace',
-      tagline: 'Verifiable audit lineage',
-      body: 'Anomalies are immediately flagged. Every number displayed to coaches carries a Trusted status tag and links back to its signed source event.',
-      stops: 'Silent manipulation of game decisions and athletic substitution calls.',
+      title: 'Is it in order?',
+      tagline: 'Monotonic sequence tracking',
+      body: 'Strictly verifies sequence continuity (last + 1) to protect the heart-rate trendline from missing telemetry gaps.',
+      stops: 'Missing readings and sequence manipulation.',
+    },
+    {
+      num: '05',
+      title: 'Does it make sense?',
+      tagline: 'Physiological and statistical bounds',
+      body: 'Checks physiological limits (30–220 bpm) and evaluates rolling per-athlete z-score against historical baseline.',
+      stops: 'Impossible values and stolen key anomalies.',
     },
   ];
 
@@ -82,240 +91,249 @@ export function HomePage() {
     },
   ];
 
-  // Total trusted count from context
-  const trustedReadingsCount = counters.trusted;
-
   return (
-    <div className="w-full bg-[#e9e4db] text-[#0F1F1B] font-['Manrope'] overflow-x-hidden">
-      {/* 1. Hero Section (Halo Layout) */}
-      <section className="py-[72px] lg:py-[96px] px-6 lg:px-[60px] relative">
-        <TrackLanes />
-        <div className="max-w-[1300px] mx-auto flex flex-col lg:flex-row items-end justify-between gap-[48px] lg:gap-[60px] relative z-10">
-          {/* Left Column: Headline + ECG + Botanical Image (520px max) */}
-          <div className="w-full lg:max-w-[520px] flex flex-col justify-between">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F4F0E8] border border-[rgba(15,31,27,0.12)] text-[12px] font-semibold uppercase tracking-wider text-[#034F46] mb-6">
-                <span className="w-2 h-2 rounded-full bg-[#034F46]" />
-                BRCX-SPT-03 · Sports Security Backbone
-              </div>
-
-              <h1 className="font-['Fraunces'] font-normal text-[46px] sm:text-[60px] lg:text-[72px] leading-[1.04] tracking-[-0.03em] text-[#0F1F1B]">
-                Every reading verified. Every number <em className="italic font-normal">traceable</em>.
-              </h1>
-
-              <EcgLine className="my-5 max-w-[420px]" color="#034F46" />
-
-              <p className="text-[17px] sm:text-[18px] text-[#48504F] leading-relaxed max-w-[48ch]">
-                A real-time sports analytics pipeline that verifies every wearable sensor reading, isolates suspicious data, and guarantees cryptographic lineage from athlete to coach.
-              </p>
+    <div className="w-full bg-[#F6F1E7] text-[#1D1B16] font-sans pb-16">
+      {/* 1. Hero Section */}
+      <section className="py-12 lg:py-20 px-4 sm:px-8 relative border-b border-[#E3DCCB]">
+        <div className="max-w-[1300px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+          {/* Left Column: Eyebrow + Headline + Heartbeat Line + Lead text + Single CTA */}
+          <div className="lg:col-span-7 space-y-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFFFFF] border border-[#E3DCCB] text-[12px] font-mono font-medium text-[#1D1B16]">
+              <span className="w-2 h-2 rounded-full bg-[#A63D2F]" aria-hidden="true" />
+              <span>Fake sensor data can cost a team a match.</span>
             </div>
 
-            {/* Botanical Illustration (Halo spec) with gentle sway */}
-            <motion.div
-              animate={{ y: [0, -6, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-              className="mt-8 flex items-center justify-start"
-            >
-              <img
-                src="https://cdn.jiro.build/Halo/image/state%2001.png"
-                alt="Botanical illustration symbolizing organic athletic balance"
-                width={360}
-                height={340}
-                referrerPolicy="no-referrer"
-                className="w-[280px] sm:w-[340px] h-auto object-contain select-none pointer-events-none opacity-90"
-              />
-            </motion.div>
-          </div>
+            <h1 className="text-[38px] sm:text-[52px] lg:text-[62px] font-semibold text-[#1D1B16] leading-[1.08] tracking-tight">
+              Every reading verified. Every number traceable.
+            </h1>
 
-          {/* Right Column: Two Stat Blocks with Left Hairline Border + Primary CTA Pill */}
-          <div className="w-full lg:max-w-[540px] flex flex-col justify-end space-y-8">
-            <div className="space-y-6">
-              {/* Stat Block 1 */}
-              <div className="border-l border-[rgba(15,31,27,0.2)] pl-6 py-2">
-                <div className="font-['Fraunces'] font-bold text-[52px] sm:text-[64px] leading-none text-[#0F1F1B]">
-                  5
-                </div>
-                <div className="text-[18px] font-semibold text-[#0F1F1B] mt-1">
-                  Checks per reading
-                </div>
-                <div className="text-[14px] text-[#48504F] leading-relaxed mt-0.5">
-                  Source, signature, freshness, order, and physiological sense.
-                </div>
-              </div>
+            <HeartbeatLine className="my-2" height={28} />
 
-              {/* Stat Block 2: Live Count of Trusted Readings from Context */}
-              <div className="border-l border-[rgba(15,31,27,0.2)] pl-6 py-2">
-                <div className="font-['Fraunces'] font-bold text-[52px] sm:text-[64px] leading-none text-[#034F46] flex items-baseline gap-2">
-                  <span>{trustedReadingsCount}</span>
-                  <span className="text-[16px] font-['Manrope'] font-semibold text-[#034F46] uppercase tracking-wider">
-                    verified
-                  </span>
-                </div>
-                <div className="text-[18px] font-semibold text-[#0F1F1B] mt-1">
-                  Trusted readings logged
-                </div>
-                <div className="text-[14px] text-[#48504F] leading-relaxed mt-0.5">
-                  Live synchronized counter with the interactive security simulator.
-                </div>
-              </div>
-            </div>
+            <p className="text-[16px] sm:text-[18px] text-[#6B6559] leading-relaxed max-w-[56ch]">
+              A secure real-time sports analytics pipeline that verifies every wearable sensor reading, quarantines suspicious data, and guarantees cryptographic lineage from athlete to coach.
+            </p>
 
-            {/* CTA Pill */}
+            {/* ONE Primary "Next" Action for Home: goes directly to Live demo */}
             <div className="pt-2">
-              <PrimaryButton href="/simulator" aria-label="Run the attack demo simulator">
-                Run the attack demo
-              </PrimaryButton>
+              <Link
+                href="/simulator"
+                id="hero-cta-btn"
+                className="inline-flex items-center gap-3 px-8 py-3.5 rounded-full bg-[#1D1B16] text-[#FFFFFF] font-semibold text-[15px] hover:bg-[#333027] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1D1B16] min-h-[48px]"
+                aria-label="Run the attack demo in the simulator"
+              >
+                <span>Run the attack demo</span>
+                <span aria-hidden="true">→</span>
+              </Link>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* 2. Photo Band (H1) with mask reveal and faint track lanes */}
-      <section className="px-6 lg:px-[60px] py-8">
-        <div className="max-w-[1300px] mx-auto">
-          <ImageCard
-            src="/images/h1-track-sprinter.jpg"
-            alt="Sprinter accelerating on running track at sunrise"
-            width={1400}
-            height={480}
-            className="w-full h-[280px] sm:h-[400px] lg:h-[480px]"
-            priority={true}
-          />
-        </div>
-      </section>
+          {/* Right Column: Mini-Animation of 3 Packets Passing Gate + 5 Checks Stat */}
+          <div className="lg:col-span-5 space-y-6">
+            <div className="bento-card p-6 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-[#E3DCCB]">
+                <span className="text-[12px] font-mono font-semibold uppercase text-[#6B6559]">
+                  Gate Ingress Verification
+                </span>
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#F6F1E7] border border-[#E3DCCB] text-[#6B6559]">
+                  Illustrative
+                </span>
+              </div>
 
-      {/* 3. How It Works Section: Image H2 Left, Step Viewer Right */}
-      <section className="py-[72px] lg:py-[96px] px-6 lg:px-[60px]">
-        <div className="max-w-[1300px] mx-auto">
-          <div className="mb-12">
-            <span className="text-[12px] font-semibold uppercase tracking-wider text-[#48504F]">
-              Step-by-Step Verification
-            </span>
-            <h2 className="font-['Fraunces'] font-normal text-[36px] sm:text-[48px] leading-[1.12] text-[#0F1F1B] mt-1">
-              How the gate stops malicious telemetry
-            </h2>
-          </div>
+              {/* Looping 3-packet animation through a verification checkpoint */}
+              <div className="w-full h-[140px] bg-[#F6F1E7] rounded-xl border border-[#E3DCCB] relative overflow-hidden flex items-center justify-center p-4">
+                <style>{`
+                  @keyframes packetPass1 {
+                    0% { transform: translateX(-160px); opacity: 0; }
+                    20% { opacity: 1; }
+                    50% { transform: translateX(0px); }
+                    80% { opacity: 1; }
+                    100% { transform: translateX(160px); opacity: 0; }
+                  }
+                  @keyframes packetPass2 {
+                    0% { transform: translateX(-160px); opacity: 0; }
+                    20% { opacity: 1; }
+                    50% { transform: translateX(0px); }
+                    80% { opacity: 1; }
+                    100% { transform: translateX(160px); opacity: 0; }
+                  }
+                  @keyframes packetPass3 {
+                    0% { transform: translateX(-160px); opacity: 0; }
+                    20% { opacity: 1; }
+                    50% { transform: translateX(0px); }
+                    80% { opacity: 1; }
+                    100% { transform: translateX(160px); opacity: 0; }
+                  }
+                  .packet-dot-1 { animation: packetPass1 3.6s infinite cubic-bezier(0.4, 0, 0.2, 1); animation-delay: 0s; }
+                  .packet-dot-2 { animation: packetPass2 3.6s infinite cubic-bezier(0.4, 0, 0.2, 1); animation-delay: 1.2s; }
+                  .packet-dot-3 { animation: packetPass3 3.6s infinite cubic-bezier(0.4, 0, 0.2, 1); animation-delay: 2.4s; }
+                  @media (prefers-reduced-motion: reduce) {
+                    .packet-dot-1, .packet-dot-2, .packet-dot-3 {
+                      animation: none !important;
+                      transform: none !important;
+                    }
+                  }
+                `}</style>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
-            {/* Image H2: Wearable Smartwatch */}
-            <div className="w-full">
-              <ImageCard
-                src="/images/h2-smartwatch-wearable.jpg"
-                alt="Smartwatch measuring athletic biometrics"
-                width={800}
-                height={600}
-                className="w-full h-[360px] sm:h-[480px]"
-              />
-            </div>
-
-            {/* Step Viewer Right */}
-            <div className="bg-[#F4F0E8] rounded-[28px] sm:rounded-[32px] border border-[rgba(15,31,27,0.12)] p-6 sm:p-10 flex flex-col justify-between min-h-[460px]">
-              <div>
-                {/* 4 Numbered Tabs */}
-                <div className="flex items-center gap-2 pb-6 border-b border-[rgba(15,31,27,0.12)]">
-                  {steps.map((st, idx) => (
-                    <button
-                      key={st.num}
-                      type="button"
-                      onClick={() => setActiveStep(idx)}
-                      className={`px-3 py-1.5 rounded-full text-[13px] font-semibold transition-all min-h-[36px] ${
-                        activeStep === idx
-                          ? 'bg-[#034F46] text-[#FCFDFD]'
-                          : 'bg-[#e9e4db] text-[#48504F] hover:text-[#0F1F1B]'
-                      }`}
-                    >
-                      {st.num}
-                    </button>
-                  ))}
+                {/* Gate checkpoint barrier */}
+                <div className="absolute inset-y-4 left-1/2 -translate-x-1/2 w-[2px] bg-[#E3DCCB] border-r border-dashed border-[#1D1B16]/30 z-0" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 px-2.5 py-1 rounded-md bg-[#FFFFFF] border border-[#E3DCCB] text-[10px] font-mono text-[#2F6B3F] font-bold shadow-xs">
+                  ✓ GATE
                 </div>
 
-                {/* Step Body */}
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeStep}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
-                    className="py-6 space-y-4"
-                  >
-                    <div className="text-[13px] font-semibold text-[#034F46] uppercase tracking-wider">
-                      {steps[activeStep].tagline}
-                    </div>
-                    <h3 className="font-['Fraunces'] text-[28px] sm:text-[34px] leading-snug text-[#0F1F1B]">
-                      {steps[activeStep].title}
-                    </h3>
-                    <p className="text-[16px] text-[#48504F] leading-relaxed">
-                      {steps[activeStep].body}
-                    </p>
-                    <div className="p-4 rounded-2xl bg-[#e9e4db]/70 border border-[rgba(15,31,27,0.1)] text-[14px]">
-                      <strong className="text-[#034F46]">Stops: </strong>
-                      <span className="text-[#48504F]">{steps[activeStep].stops}</span>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
+                {/* Packet 1 */}
+                <div className="packet-dot-1 absolute flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FFFFFF] border border-[#2F6B3F] text-[11px] font-mono text-[#2F6B3F] shadow-xs">
+                  <span className="w-2 h-2 rounded-full bg-[#2F6B3F]" />
+                  <span>S-07: 148</span>
+                </div>
+
+                {/* Packet 2 */}
+                <div className="packet-dot-2 absolute flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FFFFFF] border border-[#2F6B3F] text-[11px] font-mono text-[#2F6B3F] shadow-xs">
+                  <span className="w-2 h-2 rounded-full bg-[#2F6B3F]" />
+                  <span>S-07: 150</span>
+                </div>
+
+                {/* Packet 3 */}
+                <div className="packet-dot-3 absolute flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#FFFFFF] border border-[#2F6B3F] text-[11px] font-mono text-[#2F6B3F] shadow-xs">
+                  <span className="w-2 h-2 rounded-full bg-[#2F6B3F]" />
+                  <span>S-07: 149</span>
+                </div>
               </div>
 
-              {/* Prev and Next Step Buttons */}
-              <div className="flex items-center justify-between pt-6 border-t border-[rgba(15,31,27,0.12)]">
-                <button
-                  type="button"
-                  disabled={activeStep === 0}
-                  onClick={() => setActiveStep((s) => Math.max(0, s - 1))}
-                  className="text-[14px] font-semibold text-[#48504F] hover:text-[#0F1F1B] disabled:opacity-30 disabled:cursor-not-allowed transition-colors min-h-[44px] px-2 flex items-center gap-1"
-                >
-                  ← Previous step
-                </button>
-                <span className="text-[13px] text-[#48504F] font-mono">
-                  {activeStep + 1} of 4
-                </span>
-                <button
-                  type="button"
-                  disabled={activeStep === steps.length - 1}
-                  onClick={() => setActiveStep((s) => Math.min(steps.length - 1, s + 1))}
-                  className="text-[14px] font-semibold text-[#034F46] hover:text-[#023b34] disabled:opacity-30 disabled:cursor-not-allowed transition-colors min-h-[44px] px-2 flex items-center gap-1"
-                >
-                  Next step →
-                </button>
+              {/* Stat block */}
+              <div className="pt-2 flex items-center justify-between">
+                <div>
+                  <div className="text-[28px] font-mono font-bold text-[#1D1B16] leading-none">
+                    5 checks
+                  </div>
+                  <div className="text-[12px] font-medium text-[#6B6559] mt-1">
+                    Evaluated sequentially per reading
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-[12px] font-mono font-semibold text-[#2F6B3F]">
+                    HMAC-SHA256
+                  </div>
+                  <div className="text-[11px] text-[#6B6559]">
+                    Cryptographic signature
+                  </div>
+                </div>
               </div>
             </div>
+
+            {/* Consistent Line-Art Sensor Card */}
+            <SensorIllustration />
           </div>
         </div>
       </section>
 
-      {/* 4. Impact and Future Section: Image H3 Beside Two-Button Toggle */}
-      <section className="py-[72px] lg:py-[96px] px-6 lg:px-[60px] bg-[#F4F0E8]/50 border-t border-b border-[rgba(15,31,27,0.1)]">
-        <div className="max-w-[1300px] mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
+      {/* 2. Five Checks Row of Cards (Replacing 4-step carousel per specification) */}
+      <section className="py-16 px-4 sm:px-8 max-w-[1300px] mx-auto space-y-8">
+        <div>
+          <span className="text-[12px] font-mono font-semibold uppercase tracking-wider text-[#6B6559]">
+            Perimeter Security Protocol
+          </span>
+          <h2 className="text-[28px] sm:text-[34px] font-semibold text-[#1D1B16] mt-1">
+            Five Checks Per Reading
+          </h2>
+          <p className="text-[14px] text-[#6B6559] max-w-[60ch] mt-1">
+            Nothing unverified moves forward. Telemetry failing any checkpoint is immediately rejected or quarantined before analytics processing.
+          </p>
+        </div>
+
+        {/* Visible 5-card row (no carousel, full keyboard and screen reader accessibility) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {fiveChecks.map((chk) => (
+            <div
+              key={chk.num}
+              className="bento-card p-5 flex flex-col justify-between space-y-4 hover:border-[#1D1B16] transition-colors"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="w-7 h-7 rounded-full bg-[#F6F1E7] border border-[#E3DCCB] text-[#1D1B16] font-mono font-bold text-[12px] flex items-center justify-center">
+                    {chk.num}
+                  </span>
+                  <span className="text-[10px] font-mono uppercase text-[#6B6559]">Gate Step</span>
+                </div>
+
+                <div>
+                  <h3 className="text-[16px] font-semibold text-[#1D1B16]">
+                    {chk.title}
+                  </h3>
+                  <div className="text-[11px] font-mono text-[#2F6B3F] font-medium mt-0.5">
+                    {chk.tagline}
+                  </div>
+                </div>
+
+                <p className="text-[13px] text-[#6B6559] leading-relaxed">
+                  {chk.body}
+                </p>
+              </div>
+
+              <div className="p-3 rounded-xl bg-[#F6F1E7] border border-[#E3DCCB] text-[12px]">
+                <strong className="text-[#1D1B16]">Stops: </strong>
+                <span className="text-[#6B6559]">{chk.stops}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 3. Four Core Pillars Line-Art Bento Row (Replacing stock photos) */}
+      <section className="py-12 px-4 sm:px-8 max-w-[1300px] mx-auto border-t border-[#E3DCCB]">
+        <div className="mb-8">
+          <span className="text-[12px] font-mono font-semibold uppercase tracking-wider text-[#6B6559]">
+            Architecture Principles
+          </span>
+          <h2 className="text-[28px] sm:text-[34px] font-semibold text-[#1D1B16] mt-1">
+            Engineered for Sideline Resilience
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <SensorIllustration />
+          <ShieldIllustration />
+          <LedgerIllustration />
+          <DashboardIllustration />
+        </div>
+      </section>
+
+      {/* 4. Impact and Future Scope Bento Tabs */}
+      <section className="py-16 px-4 sm:px-8 border-t border-[#E3DCCB]">
+        <div className="max-w-[1300px] mx-auto space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <span className="text-[12px] font-semibold uppercase tracking-wider text-[#48504F]">
+              <span className="text-[12px] font-mono font-semibold uppercase tracking-wider text-[#6B6559]">
                 Strategic Outcomes
               </span>
-              <h2 className="font-['Fraunces'] font-normal text-[36px] sm:text-[48px] leading-[1.12] text-[#0F1F1B] mt-1">
+              <h2 className="text-[28px] sm:text-[34px] font-semibold text-[#1D1B16] mt-1">
                 Impact & Future Scope
               </h2>
             </div>
 
             {/* Two-Button Toggle */}
-            <div className="inline-flex p-1 bg-[#e9e4db] rounded-full border border-[rgba(15,31,27,0.12)]">
+            <div className="inline-flex p-1 bg-[#FFFFFF] rounded-full border border-[#E3DCCB]" role="tablist">
               <button
                 type="button"
+                role="tab"
+                aria-selected={impactTab === 'impact'}
                 onClick={() => setImpactTab('impact')}
-                className={`px-5 py-2 rounded-full text-[14px] font-semibold transition-all min-h-[40px] ${
+                className={`px-5 py-2 rounded-full text-[13px] font-medium transition-colors ${
                   impactTab === 'impact'
-                    ? 'bg-[#034F46] text-[#FCFDFD] shadow-xs'
-                    : 'text-[#48504F] hover:text-[#0F1F1B]'
+                    ? 'bg-[#1D1B16] text-[#FFFFFF] font-semibold'
+                    : 'text-[#6B6559] hover:text-[#1D1B16]'
                 }`}
               >
                 Impact
               </button>
               <button
                 type="button"
+                role="tab"
+                aria-selected={impactTab === 'future'}
                 onClick={() => setImpactTab('future')}
-                className={`px-5 py-2 rounded-full text-[14px] font-semibold transition-all min-h-[40px] ${
+                className={`px-5 py-2 rounded-full text-[13px] font-medium transition-colors ${
                   impactTab === 'future'
-                    ? 'bg-[#034F46] text-[#FCFDFD] shadow-xs'
-                    : 'text-[#48504F] hover:text-[#0F1F1B]'
+                    ? 'bg-[#1D1B16] text-[#FFFFFF] font-semibold'
+                    : 'text-[#6B6559] hover:text-[#1D1B16]'
                 }`}
               >
                 Future scope
@@ -323,62 +341,38 @@ export function HomePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Image H3 (5 cols) */}
-            <div className="lg:col-span-5">
-              <ImageCard
-                src="/images/h3-coach-analytics.jpg"
-                alt="Coach analyzing real-time athlete biometrics on sidelines"
-                width={800}
-                height={700}
-                className="w-full h-[380px] sm:h-[460px]"
-              />
-            </div>
-
-            {/* Four Cards Grid (7 cols) */}
-            <div className="lg:col-span-7">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={impactTab}
-                  initial={{ opacity: 0, x: 12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -12 }}
-                  transition={{ duration: 0.35 }}
-                  className="grid grid-cols-1 sm:grid-cols-2 gap-4"
-                >
-                  {(impactTab === 'impact' ? impactCards : futureCards).map((card, i) => (
-                    <div
-                      key={card.title}
-                      className="p-6 rounded-[24px] bg-[#F4F0E8] border border-[rgba(15,31,27,0.12)] flex flex-col justify-between"
-                    >
-                      <div>
-                        <div className="w-8 h-8 rounded-full bg-[#E4F1C6] text-[#034F46] font-bold text-[13px] flex items-center justify-center mb-3">
-                          0{i + 1}
-                        </div>
-                        <h4 className="font-['Fraunces'] text-[20px] text-[#0F1F1B] mb-2">
-                          {card.title}
-                        </h4>
-                        <p className="text-[14px] text-[#48504F] leading-relaxed">
-                          {card.desc}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </motion.div>
-              </AnimatePresence>
-            </div>
+          {/* 4 Impact Items shown as a clean Bento Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {(impactTab === 'impact' ? impactCards : futureCards).map((card, i) => (
+              <div
+                key={card.title}
+                className="bento-card p-6 flex flex-col justify-between space-y-4"
+              >
+                <div>
+                  <div className="w-8 h-8 rounded-full bg-[#F6F1E7] border border-[#E3DCCB] text-[#1D1B16] font-mono font-bold text-[12px] flex items-center justify-center mb-3">
+                    0{i + 1}
+                  </div>
+                  <h3 className="text-[18px] font-semibold text-[#1D1B16] mb-2">
+                    {card.title}
+                  </h3>
+                  <p className="text-[13px] text-[#6B6559] leading-relaxed">
+                    {card.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
 
-          {/* Closing Line */}
-          <div className="mt-14 pt-8 border-t border-[rgba(15,31,27,0.12)] text-center">
-            <p className="font-['Fraunces'] italic text-[22px] sm:text-[26px] text-[#034F46]">
+          {/* Closing Strip Quote */}
+          <div className="pt-8 border-t border-[#E3DCCB] text-center">
+            <p className="font-sans font-semibold text-[18px] sm:text-[22px] text-[#1D1B16]">
               “A trusted data backbone for sports, from sensor to decision.”
             </p>
           </div>
         </div>
       </section>
 
-      {/* 5. Bottom Navigation Bar */}
+      {/* No second competing CTA at bottom of Home per specification */}
       <BottomBar />
     </div>
   );
