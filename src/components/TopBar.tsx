@@ -3,38 +3,40 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { PrimaryButton } from './Buttons';
 
 const NAV_ITEMS = [
   { href: '/', label: 'Home', shortLabel: 'Home' },
+  { href: '/simulator', label: 'Live demo', shortLabel: 'Live demo' },
   { href: '/architecture', label: 'Architecture', shortLabel: 'Arch' },
-  { href: '/simulator', label: 'Live demo', shortLabel: 'Demo' },
-  { href: '/video', label: 'Video demo', shortLabel: 'Video' },
 ];
 
 export function TopBar() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-[#e9e4db]/85 border-b border-[rgba(15,31,27,0.12)] transition-colors">
-      <div className="max-w-[1300px] mx-auto px-4 sm:px-8 h-[76px] flex items-center justify-between gap-2">
+    <header className="sticky top-0 z-40 w-full bg-[#F6F1E7] border-b border-[#E3DCCB]">
+      <div className="max-w-[1300px] mx-auto px-4 sm:px-8 h-[64px] flex items-center justify-between">
         {/* Wordmark Left */}
         <Link
           href="/"
-          className="flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#034F46] rounded-lg py-1 px-1.5 shrink-0"
+          className="flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1D1B16] rounded-md py-1 px-1.5"
           aria-label="PerformanceStream home"
         >
-          <span className="w-2.5 h-2.5 rounded-full bg-[#034F46] animate-pulse" />
-          <span className="font-['Fraunces'] font-semibold text-[20px] sm:text-[22px] tracking-tight text-[#0F1F1B]">
+          {/* Hand-drawn style mini heartbeat mark */}
+          <span className="w-7 h-7 rounded-lg bg-[#FFFFFF] border border-[#E3DCCB] flex items-center justify-center shrink-0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D1B16" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M2 12h4l2.5-6 4 13 3-9 2.5 4H22" />
+            </svg>
+          </span>
+          <span className="font-sans font-semibold text-[16px] sm:text-[17px] tracking-tight text-[#1D1B16]">
             PerformanceStream
           </span>
         </Link>
 
-        {/* 3 Links Centered with Shared LayoutId Gliding Pill */}
+        {/* Navigation Items: Home, Live demo, Architecture */}
         <nav
-          className="flex items-center gap-1 sm:gap-2 p-1.5 bg-[#F4F0E8] border border-[rgba(15,31,27,0.12)] rounded-full relative"
-          aria-label="Primary navigation"
+          className="flex items-center gap-1 p-1 bg-[#FFFFFF] border border-[#E3DCCB] rounded-full"
+          aria-label="Main navigation"
         >
           {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.href;
@@ -42,31 +44,21 @@ export function TopBar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`relative px-3 sm:px-4 py-1.5 rounded-full text-[13px] sm:text-[14px] font-['Manrope'] font-medium transition-colors z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#034F46] min-h-[36px] flex items-center justify-center ${
-                  isActive ? 'text-[#0F1F1B] font-semibold' : 'text-[#48504F] hover:text-[#0F1F1B]'
+                className={`px-3.5 sm:px-4 py-1.5 rounded-full text-[13px] sm:text-[14px] font-sans font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1D1B16] min-h-[36px] flex items-center justify-center ${
+                  isActive
+                    ? 'bg-[#F6F1E7] text-[#1D1B16] font-semibold border border-[#E3DCCB]'
+                    : 'text-[#6B6559] hover:text-[#1D1B16]'
                 }`}
+                aria-current={isActive ? 'page' : undefined}
               >
-                {isActive && (
-                  <motion.div
-                    layoutId="nav-glide-pill"
-                    className="absolute inset-0 bg-[#e9e4db] border border-[rgba(15,31,27,0.15)] rounded-full shadow-xs -z-10"
-                    transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-                  />
-                )}
                 <span className="hidden sm:inline">{item.label}</span>
                 <span className="sm:hidden">{item.shortLabel}</span>
               </Link>
             );
           })}
         </nav>
-
-        {/* Right CTA */}
-        <div className="shrink-0">
-          <PrimaryButton href="/simulator" aria-label="Run the demo simulator">
-            Run the demo
-          </PrimaryButton>
-        </div>
       </div>
     </header>
   );
 }
+

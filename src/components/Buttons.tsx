@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import React from 'react';
 
-interface PrimaryButtonProps {
+interface ButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
   href?: string;
@@ -11,6 +10,7 @@ interface PrimaryButtonProps {
   disabled?: boolean;
   type?: 'button' | 'submit' | 'reset';
   'aria-label'?: string;
+  id?: string;
 }
 
 export function PrimaryButton({
@@ -21,89 +21,24 @@ export function PrimaryButton({
   disabled = false,
   type = 'button',
   'aria-label': ariaLabel,
-}: PrimaryButtonProps) {
-  const btnRef = useRef<HTMLButtonElement | HTMLAnchorElement | null>(null);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (disabled || !btnRef.current) return;
-    const rect = btnRef.current.getBoundingClientRect();
-    const x = (e.clientX - (rect.left + rect.width / 2)) * 0.15;
-    const y = (e.clientY - (rect.top + rect.height / 2)) * 0.15;
-    setOffset({ x, y });
-  };
-
-  const handleMouseLeave = () => {
-    setOffset({ x: 0, y: 0 });
-  };
-
-  const content = (
-    <motion.span
-      className="inline-flex items-center gap-3 w-full justify-between"
-      animate={{ x: offset.x, y: offset.y }}
-      transition={{ type: 'spring', stiffness: 260, damping: 18 }}
-    >
-      <span className="w-11 h-11 rounded-full bg-[#E4F1C6] flex items-center justify-center shrink-0 transition-transform group-hover:rotate-45">
-        <svg
-          width="11"
-          height="11"
-          viewBox="0 0 11 11"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <path
-            d="M0.353516 10L9.85352 0.5M9.85352 0.5V8.5M9.85352 0.5H1.85352"
-            stroke="#034F46"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </span>
-      <span className="font-['Manrope'] font-semibold text-[15px] tracking-tight text-[#FCFDFD] pr-4 whitespace-nowrap">
-        {children}
-      </span>
-    </motion.span>
-  );
-
-  const baseClasses = `group inline-flex items-center justify-between p-[4px_4px_4px_4px] bg-[#034F46] hover:bg-[#023b34] rounded-[99px] text-[#FCFDFD] shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#034F46] focus-visible:ring-offset-2 min-h-[48px] ${
+  id,
+}: ButtonProps) {
+  const baseClasses = `inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-[#1D1B16] text-[#FFFFFF] font-sans font-semibold text-[14px] hover:bg-[#333027] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1D1B16] min-h-[44px] ${
     disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : 'cursor-pointer'
   } ${className}`;
 
   if (href) {
     return (
-      <motion.a
-        ref={btnRef as any}
-        href={href}
-        onClick={onClick}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        whileHover={{ y: -2, scale: 1.02 }}
-        whileTap={{ scale: 0.96 }}
-        aria-label={ariaLabel}
-        className={baseClasses}
-      >
-        {content}
-      </motion.a>
+      <a href={href} id={id} className={baseClasses} aria-label={ariaLabel}>
+        {children}
+      </a>
     );
   }
 
   return (
-    <motion.button
-      ref={btnRef as any}
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      whileHover={{ y: -2, scale: 1.02 }}
-      whileTap={{ scale: 0.96 }}
-      aria-label={ariaLabel}
-      className={baseClasses}
-    >
-      {content}
-    </motion.button>
+    <button type={type} id={id} onClick={onClick} disabled={disabled} className={baseClasses} aria-label={ariaLabel}>
+      {children}
+    </button>
   );
 }
 
@@ -113,29 +48,24 @@ export function SecondaryButton({
   href,
   className = '',
   disabled = false,
+  type = 'button',
   'aria-label': ariaLabel,
-}: {
-  children: React.ReactNode;
-  onClick?: () => void;
-  href?: string;
-  className?: string;
-  disabled?: boolean;
-  'aria-label'?: string;
-}) {
-  const baseClasses = `inline-flex items-center justify-center px-5 py-2.5 rounded-[99px] border border-[rgba(15,31,27,0.15)] bg-transparent text-[#0F1F1B] font-['Manrope'] font-semibold text-[14px] hover:border-[#0F1F1B] hover:bg-[rgba(15,31,27,0.03)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#034F46] min-h-[44px] ${
+  id,
+}: ButtonProps) {
+  const baseClasses = `inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full border border-[#E3DCCB] bg-[#FFFFFF] text-[#1D1B16] font-sans font-medium text-[14px] hover:border-[#1D1B16] hover:bg-[#F6F1E7] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1D1B16] min-h-[44px] ${
     disabled ? 'opacity-40 cursor-not-allowed pointer-events-none' : 'cursor-pointer'
   } ${className}`;
 
   if (href) {
     return (
-      <a href={href} className={baseClasses} aria-label={ariaLabel}>
+      <a href={href} id={id} className={baseClasses} aria-label={ariaLabel}>
         {children}
       </a>
     );
   }
 
   return (
-    <button type="button" onClick={onClick} disabled={disabled} className={baseClasses} aria-label={ariaLabel}>
+    <button type={type} id={id} onClick={onClick} disabled={disabled} className={baseClasses} aria-label={ariaLabel}>
       {children}
     </button>
   );
@@ -145,32 +75,60 @@ export function AttackButton({
   children,
   onClick,
   disabled = false,
-  dotColor = 'amber',
+  statusType = 'attack',
   active = false,
+  description = '',
+  shortcutKey = '',
   className = '',
+  id,
 }: {
   children: React.ReactNode;
   onClick?: () => void;
   disabled?: boolean;
-  dotColor?: 'amber' | 'clay' | 'green';
+  statusType?: 'normal' | 'attack';
   active?: boolean;
+  description?: string;
+  shortcutKey?: string;
   className?: string;
+  id?: string;
 }) {
-  const dotBg = dotColor === 'amber' ? 'bg-[#B7791F]' : dotColor === 'clay' ? 'bg-[#B5483A]' : 'bg-[#034F46]';
+  const marker = statusType === 'normal' ? (
+    <span className="w-2 h-2 rounded-full bg-[#2F6B3F] shrink-0" aria-hidden="true" />
+  ) : (
+    <span className="w-2 h-2 rounded-xs bg-[#B7791F] shrink-0" aria-hidden="true" />
+  );
 
   return (
     <button
       type="button"
+      id={id}
       onClick={onClick}
       disabled={disabled}
-      className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-[99px] border text-[13px] font-['Manrope'] font-medium transition-all min-h-[44px] ${
+      title={description}
+      aria-label={`${children}. ${description}${shortcutKey ? ` Shortcut: ${shortcutKey}` : ''}`}
+      className={`inline-flex flex-col text-left p-3 rounded-xl border transition-all min-h-[44px] ${
         active
-          ? 'border-[#034F46] bg-[#F4F0E8] text-[#0F1F1B] font-semibold ring-1 ring-[#034F46]'
-          : 'border-[rgba(15,31,27,0.15)] bg-transparent text-[#0F1F1B] hover:border-[rgba(15,31,27,0.4)]'
-      } ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'} ${className}`}
+          ? 'border-[#1D1B16] bg-[#FFFFFF] ring-2 ring-[#1D1B16] shadow-sm'
+          : 'border-[#E3DCCB] bg-[#FFFFFF] hover:border-[#1D1B16] hover:bg-[#FAF8F3]'
+      } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${className}`}
     >
-      <span className={`w-2 h-2 rounded-full ${dotBg} shrink-0`} />
-      <span>{children}</span>
+      <div className="flex items-center justify-between w-full gap-2">
+        <div className="flex items-center gap-2">
+          {marker}
+          <span className="font-sans font-semibold text-[13px] text-[#1D1B16]">{children}</span>
+        </div>
+        {shortcutKey && (
+          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#F6F1E7] border border-[#E3DCCB] text-[#6B6559]">
+            {shortcutKey}
+          </span>
+        )}
+      </div>
+      {description && (
+        <span className="text-[11px] text-[#6B6559] mt-1 leading-snug line-clamp-1">
+          {description}
+        </span>
+      )}
     </button>
   );
 }
+

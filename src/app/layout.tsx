@@ -25,15 +25,15 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen bg-[#e9e4db] text-[#0F1F1B] font-['Manrope'] antialiased selection:bg-[#E4F1C6] selection:text-[#034F46]">
+      <body className="min-h-screen bg-[#F6F1E7] text-[#1D1B16] font-sans antialiased selection:bg-[#E3DCCB] selection:text-[#1D1B16]">
         <SimProvider>
           <div className="flex flex-col min-h-screen">
             <TopBar />
-            <main className="flex-1 w-full">
+            <main className="flex-1 w-full" id="main-content">
               {children}
             </main>
             <Footer />

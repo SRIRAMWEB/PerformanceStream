@@ -9,42 +9,39 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        cream: '#FAFADC',
-        green: '#024E46',
-        charcoal: '#1A1A1A',
-        white: '#FEFEFF',
-        text: '#2F4A45',
-        pink: '#F681A2',
-        violet: '#9F82FE',
-        g600: '#119C75',
-        g400: '#69D1AD',
-        success: {
-          DEFAULT: '#0E7C5A',
-          bg: '#E4F5EE',
+        canvas: '#F6F1E7',
+        card: '#FFFFFF',
+        border: '#E3DCCB',
+        ink: '#1D1B16',
+        muted: '#6B6559',
+        trusted: {
+          DEFAULT: '#2F6B3F',
+          bg: '#F0F6F2',
+          border: '#C1DEC8',
         },
-        danger: {
-          DEFAULT: '#B3261E',
-          bg: '#FBE9E7',
+        quarantined: {
+          DEFAULT: '#B7791F',
+          bg: '#FEF8EE',
+          border: '#F5DCB0',
         },
-        warn: {
-          DEFAULT: '#8A5A00',
-          bg: '#FFF1D6',
+        rejected: {
+          DEFAULT: '#A63D2F',
+          bg: '#FDF2F0',
+          border: '#F3C4BE',
         },
       },
       fontFamily: {
-        serif: ['var(--font-instrument-serif)', '"Times New Roman"', 'serif'],
-        sans: ['var(--font-inter)', 'sans-serif'],
+        sans: ['Geist', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        mono: ['Geist Mono', 'JetBrains Mono', 'monospace'],
       },
       borderRadius: {
-        chip: '12px',
-        card: '20px',
-        panel: '24px',
+        card: '16px',
+        panel: '16px',
         pill: '999px',
       },
       boxShadow: {
-        sm: '0 1px 2px rgba(2,78,70,0.06)',
-        md: '0 8px 24px rgba(2,78,70,0.08)',
-        lg: '0 20px 48px rgba(2,78,70,0.12)',
+        subtle: '0 1px 2px rgba(29, 27, 22, 0.04)',
+        card: '0 1px 3px rgba(29, 27, 22, 0.05)',
       },
     },
   },
