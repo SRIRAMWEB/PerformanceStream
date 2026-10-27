@@ -653,19 +653,19 @@ export function SimulatorPage() {
               <span className="font-mono text-[36px] font-bold text-[#2F6B3F] leading-none my-2">
                 {counters.trusted}
               </span>
-              <span className="text-[10px] text-[#2F6B3F]/80">Passed gate</span>
+              <span className="text-[10px] text-[#2F6B3F] font-medium">Passed gate</span>
             </div>
 
             {/* Quarantined */}
             <div className="bento-card p-4 flex flex-col justify-between text-center border-[#F5DCB0] bg-[#FEF8EE]">
-              <div className="flex items-center justify-center gap-1.5 text-[11px] font-mono uppercase text-[#B7791F] font-semibold">
+              <div className="flex items-center justify-center gap-1.5 text-[11px] font-mono uppercase text-[#8C510A] font-semibold">
                 <span className="text-[10px]" aria-hidden="true">▲</span>
                 <span>Quarantine</span>
               </div>
-              <span className="font-mono text-[36px] font-bold text-[#B7791F] leading-none my-2">
+              <span className="font-mono text-[36px] font-bold text-[#8C510A] leading-none my-2">
                 {counters.quarantined}
               </span>
-              <span className="text-[10px] text-[#B7791F]/80">Isolated</span>
+              <span className="text-[10px] text-[#8C510A] font-medium">Isolated</span>
             </div>
 
             {/* Rejected */}
@@ -677,7 +677,7 @@ export function SimulatorPage() {
               <span className="font-mono text-[36px] font-bold text-[#A63D2F] leading-none my-2">
                 {counters.rejected}
               </span>
-              <span className="text-[10px] text-[#A63D2F]/80">Dropped</span>
+              <span className="text-[10px] text-[#A63D2F] font-medium">Dropped</span>
             </div>
 
             {/* Trust Ring Gauge & Chain Status in Bottom Span */}
@@ -974,13 +974,13 @@ export function SimulatorPage() {
                     </span>
                   </div>
                   <div className="text-[12px] font-sans font-semibold text-[#1D1B16]">
-                    {block.data.value} bpm ({block.data.device_id})
+                    {block.record?.value ?? 148} bpm ({block.record?.device_id ?? 'S-07'})
                   </div>
                   <div className="truncate text-[#6B6559]" title={`Hash: ${block.hash}`}>
                     hash: {block.hash ? block.hash.slice(0, 14) + '…' : '—'}
                   </div>
-                  <div className="truncate text-[#6B6559]" title={`Prev: ${block.prevHash}`}>
-                    prev: {block.prevHash ? block.prevHash.slice(0, 10) + '…' : '—'}
+                  <div className="truncate text-[#6B6559]" title={`Prev: ${block.previousHash || block.prevHash}`}>
+                    prev: {(block.previousHash || block.prevHash) ? (block.previousHash || block.prevHash).slice(0, 10) + '…' : '—'}
                   </div>
                 </div>
               ))}

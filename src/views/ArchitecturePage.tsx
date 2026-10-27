@@ -484,17 +484,17 @@ export function ArchitecturePage() {
                   : 'Analyst view: Unlocked deep visibility into raw streams, quarantined anomaly buckets, and security event logs.'}
               </p>
 
-              <div className="p-3 rounded-xl bg-[#F6F1E7] border border-[#E3DCCB] text-[12px] space-y-1.5 font-mono">
-                <div className="text-[#2F6B3F] font-semibold">
-                  ✓ Trusted Metrics: VISIBLE
+                <div className="p-3.5 rounded-xl bg-[#F6F1E7] border border-[#E3DCCB] text-[12px] space-y-1.5 font-mono">
+                  <div className="text-[#2F6B3F] font-semibold">
+                    ✓ Trusted Metrics: VISIBLE
+                  </div>
+                  <div className={userRole === 'analyst' ? 'text-[#8C510A] font-semibold' : 'text-[#6B6559]'}>
+                    {userRole === 'analyst' ? '✓ Quarantined Anomaly Bucket: VISIBLE' : '✕ Quarantined Data: HIDDEN'}
+                  </div>
+                  <div className={userRole === 'analyst' ? 'text-[#1D1B16] font-semibold' : 'text-[#6B6559]'}>
+                    {userRole === 'analyst' ? '✓ WORM Security Audit Log: UNLOCKED' : '✕ Security Logs: LOCKED'}
+                  </div>
                 </div>
-                <div className={userRole === 'analyst' ? 'text-[#B7791F] font-semibold' : 'text-[#6B6559]/50'}>
-                  {userRole === 'analyst' ? '✓ Quarantined Anomaly Bucket: VISIBLE' : '✕ Quarantined Data: HIDDEN'}
-                </div>
-                <div className={userRole === 'analyst' ? 'text-[#1D1B16] font-semibold' : 'text-[#6B6559]/50'}>
-                  {userRole === 'analyst' ? '✓ WORM Security Audit Log: UNLOCKED' : '✕ Security Logs: LOCKED'}
-                </div>
-              </div>
             </div>
 
             <div className="pt-4 border-t border-[#E3DCCB] text-[12px] font-mono text-[#6B6559]">
